@@ -137,33 +137,24 @@ async function getLogs(user_id) {
     }
 }
 
-// getUser(1);
+// GET route "menu" (sous forme /menu/:name/:subname)
+// "authorized" si utilisateur (id) possède les droits pour accéder à la page
+// "unauthorized" sinon
+// "unknown page" si la page n'existe pas
 
-// getUserByFullNameLike('Perr', 'Milvyne').then(users => {
-//     console.log('Found users: ', users);
-// }).catch(error => {
-//     console.error('Error ', error);
-// });
-
-// login('Milvyne', 'Perrolet', 'milvyne123').then(user => {
-//     if (user) {
-//         console.log('Connexion ok !');
-//     } else {
-//         console.log('Connexion pas ok !');
-//     }
-// }).catch(error => {
-//     console.error('Erreur :', error);
-// });
-
-// changePassword('Milvyne', 'Perrolet', 'milvyne123', 'je_suis_securise_hehe').then(success => {
-//     if (success) {
-//         console.log('Mot de passe changé avec succès !');
-//     } else {
-//         console.log('Changement de mot de passe échoué.');
-//     }
-// }).catch(error => {
-//     console.error('Erreur changement mot de passe :', error);
-// });
+async function authorized(id, page) {
+    const client = await pool.connect();
+    try {
+        const query = '';
+        const res = await client.query(query, [id, page]);
+        return res.rows.length > 0;
+    } catch (error) {
+        console.error('Erreur récupération droits :', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
 
 module.exports = {
     login,
