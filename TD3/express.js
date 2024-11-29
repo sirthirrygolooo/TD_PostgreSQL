@@ -69,6 +69,23 @@ router.get("/route-logs", (req, res) => {
     });
 });
 
+// GET route "menu" (sous forme /menu/:name/:subname)
+// "authorized" si utilisateur (id) possède les droits pour accéder à la page
+// "unauthorized" sinon
+// "unknown page" si la page n'existe pas
+
+router.get("/menu/:name/:subname", (req, res) => {
+    controller.authorized(req.body.user_id, req.params.name, req.params.subname).then((authorized) => {
+        if (authorized) {
+            res.send("authorized");
+        } else {
+            res.send("unauthorized");
+        }
+    }).catch((error) => {
+        res.send("unknown page");
+    });
+});
+
 
 app.use(router);
 app.listen(port, () => {

@@ -137,19 +137,18 @@ async function getLogs(user_id) {
     }
 }
 
-// GET route "menu" (sous forme /menu/:name/:subname)
-// "authorized" si utilisateur (id) possède les droits pour accéder à la page
-// "unauthorized" sinon
-// "unknown page" si la page n'existe pas
 
-async function authorized(id, page) {
+// utilisateurs a un group_id, qui correspond a des droits dans droit_de_menus qui sont reliés à un menu_id et un element_id respectivement associés à la table menus et elements_de_menu
+async function authorized(user_id, menu, submenu) {
     const client = await pool.connect();
     try {
-        const query = '';
-        const res = await client.query(query, [id, page]);
+        console.log(user_id, menu, submenu);
+        const query = 'SELECT * FROM DROITS_DE_MENUS WHERE group_id = (SELECT group_id FROM UTILISATEURS WHERE user_id = $1) AND menu_id = (SELECT menu_id FROM MENUS WHERE nom_menu = $2) AND element_id = (SELECT id FROM ELEMENTS_DE_MENU WHERE lien = $3)';
+        const res = await client.query(query, [user_id, menu, submenu]);
         return res.rows.length > 0;
-    } catch (error) {
-        console.error('Erreur récupération droits :', error);
+    }
+    catch (error) {
+        console.error('Erreur autorisation :', error);
         throw error;
     } finally {
         client.release();
@@ -159,5 +158,6 @@ async function authorized(id, page) {
 module.exports = {
     login,
     changePassword,
-    getLogs
+    getLogs,
+    authorized
 };
