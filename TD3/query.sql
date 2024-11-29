@@ -1,0 +1,1 @@
+SELECT * FROM UTILISATEURS WHERE first_name = $1 AND last_name = $2 AND password = $3
